@@ -5,17 +5,17 @@ module.exports = class VK {
         this.username = username;
         this.password = password;
     }
-    sendInvite = async (group_id, user_id, index) => {
+    addFriend = async (user_id, index) => {
         await easyvk({
             username: this.username,
             password: this.password,
             sessionFile: path.join(__dirname, '.my-session')
         }).then(async vk => {
-            await vk.call('groups.invite', {
-                group_id: group_id,
+            await vk.call('friends.add', {
                 user_id: user_id,
+                text: 'Привет мы кажется знакомы'
             }).then(() => {
-                console.log(`Invite #${index} id: ${user_id} is sending.`);
+                console.log(`Add #${index} id: ${user_id}.`);
                 return true;
             }).catch(error => {
                 return this.errors(error, index, user_id);
@@ -31,7 +31,7 @@ module.exports = class VK {
         switch (error_code) {
             case undefined: console.error(error);
             break;
-            case 15: console.error(`#${index} invite not send. User: ${user_id} ${error_msg}.`);
+            case 15: console.error(`#${index} not add user: ${user_id} ${error_msg}.`);
             break;
             case 14: return new Error(error_msg);
         }

@@ -42,7 +42,7 @@ module.exports = class Program {
         let current_ids = friend_ids.slice(last_index, last_index + this.friends_count + 1);
         await this.setLastUser(current_ids.pop());
         let generator = this.genFriendId(current_ids);
-        this.pushing(this.account.sendInvite, generator);
+        this.pushing(this.account.addFriend, generator);
     }
     onTick = (func, generator) => {
         if (this.index >= this.friends_count) {
@@ -50,7 +50,7 @@ module.exports = class Program {
         }
         let user_id = generator.next().value;
         if (user_id) {
-            if(!func(this.GROUP_ID, user_id, this.index)) this.index--;
+            if(!func(user_id, this.index)) this.index--;
         } else {
             return new Error('Cron stop. User list is empty.');
         }
